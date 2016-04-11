@@ -6,14 +6,18 @@
 
 class RPiPinIn
   
-  def initialize(id)
+  def initialize(id, pull: nil)
     
     @id = id
     unexport()
     
     File.write '/sys/class/gpio/export', id
-    File.write "/sys/class/gpio/gpio#{id}/direction", 'out'
-    File.write "/sys/class/gpio/gpio#{id}/direction", 'high'
+    File.write "/sys/class/gpio/gpio#{id}/direction", 'in'
+    
+    case pull
+    when :up
+      File.write "/sys/class/gpio/gpio#{id}/direction", 'high'
+    end
     
     at_exit {   unexport() }
     
