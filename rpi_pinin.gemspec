@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'rpi_pinin'
-  s.version = '0.1.0'
+  s.version = '0.1.1'
   s.summary = 'Represents a Raspberry Pi GPIO pin in e.g. to read a button press.'
   s.authors = ['James Robertson']
   s.files = Dir['lib/rpi_pinin.rb']

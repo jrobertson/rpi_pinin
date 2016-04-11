@@ -35,7 +35,7 @@ class RPiPinIn
     
     watch() do |value|
       
-      if value == '1' then
+      if value == 1 then
         
         yield if block_given?
         on_high()
@@ -74,7 +74,7 @@ class RPiPinIn
   private
   
   def read_value()
-    File.read("/sys/class/gpio/gpio#{@id}/value").chomp  == '0' ? '1' : '0'
+    File.read("/sys/class/gpio/gpio#{@id}/value").chomp  == '0' ? 1 : 0
   end
   
   # to avoid "Device or resource busy @ fptr_finalize - /sys/class/gpio/export"
