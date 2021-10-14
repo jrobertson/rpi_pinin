@@ -6,20 +6,25 @@
 
 class RPiPinIn
   
-  def initialize(id, pull: nil)
+  include RXFHelperModule if defined?(RXFHelperModule)
+  
+  def initialize(id, simulator=nil, pull: nil)
     
-    @id = id
-    unexport()
+    @id, @simulator = id, simulator
     
-    File.write '/sys/class/gpio/export', id
-    File.write "/sys/class/gpio/gpio#{id}/direction", 'in'
-    
-    case pull
-    when :up
-      File.write "/sys/class/gpio/gpio#{id}/direction", 'high'
+    if not @simulator then
+      unexport()
+      
+      File.write '/sys/class/gpio/export', id
+      File.write "/sys/class/gpio/gpio#{id}/direction", 'in'
+      
+      case pull
+      when :up
+        File.write "/sys/class/gpio/gpio#{id}/direction", 'high'
+      end
+      
+      at_exit {   unexport() }
     end
-    
-    at_exit {   unexport() }
     
   end
 
@@ -66,6 +71,8 @@ class RPiPinIn
       end
       
       old_value = value
+      
+      sleep 0.1
     end
     
   end
@@ -78,7 +85,10 @@ class RPiPinIn
   private
   
   def read_value()
+    
+    return FileX.read(@simulator) if @simulator
     File.read("/sys/class/gpio/gpio#{@id}/value").chomp  == '0' ? 1 : 0
+    
   end
   
   # to avoid "Device or resource busy @ fptr_finalize - /sys/class/gpio/export"
